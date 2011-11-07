@@ -175,7 +175,7 @@ class ShortURLService(callbacks.Plugin):
         Makes a short URL from the given <URL>
         """
 
-        number = self.db.writeURL('mirja', url)
+        number = self.db.writeURL(msg.args[0], url)
         shorturl = "http://%s/%s" % (
                 conf.supybot.plugins.ShortURLService.baseurl, 
                 base62_encode(number))
