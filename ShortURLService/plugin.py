@@ -77,19 +77,8 @@ class ShortURLServiceCallback(httpserver.SupyHTTPServerCallback):
                 response = 200
                 content_type = 'text/html'
                 output = '<p> This is the ShortURLService Plugin for Supybot/Limnoira </p>'
-
-            #else:
             
-            elif path == "/?":
-                response = 200
-                content_type = 'text/html'
-                output = '<p> Supybot/Limnoira </p>'
-            elif path == "/bla":
-                response = 200
-                content_type = 'text/html'
-                output = '<h2> This is Bla </h2>'
             elif len(path) < 13:
-            #elif path.startswith('/?'):
                 response = 200
                 content_type = 'text/html'
                 number = int(base62_decode(path.lstrip('/')))
@@ -97,21 +86,24 @@ class ShortURLServiceCallback(httpserver.SupyHTTPServerCallback):
                 url = self.db.getURLbyID(number)
                 #output = '<p> %s' % url
                 output = '<meta http-equiv="refresh" content="0; url=%s">' % url
-            else:
+           
+           else:
                 response = 404
                 content_type ='text/html'
                 output = '<h2> Error:404 </h2><p>No such Page</p>'
+        
         except FooException, e:
             response = 500
             content_type = 'text/html'
             if output == '':
                 output = '<h1>Internal server error</h1>'
+        
         finally:
             self.send_response(response)
             self.send_header('Content-type', content_type)
             self.end_headers()
             self.wfile.write(output)
-        pass
+        
 
 class ShortURLServiceDB:
     def __init__(self):
