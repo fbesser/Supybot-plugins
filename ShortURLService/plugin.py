@@ -94,9 +94,9 @@ class ShortURLServiceCallback(httpserver.SupyHTTPServerCallback):
 
            
             else:
-                response = 400
+                response = 404
                 content_type ='text/html'
-                output = '<h2> Error:400 </h2><p>I don\'t understand you</p>'
+                output = '<h2> Error:404 </h2><p>No such page</p>'
         
         except FooException, e:
             response = 500
