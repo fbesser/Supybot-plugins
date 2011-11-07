@@ -71,7 +71,6 @@ class ShortURLServiceCallback(httpserver.SupyHTTPServerCallback):
     This plugin handles only GET request, please don't use other requests."""
 
     def doGet(self, handler, path):
-        splittedPath = path.split('/')
 
         try:
             if path == "/":
@@ -89,7 +88,7 @@ class ShortURLServiceCallback(httpserver.SupyHTTPServerCallback):
                 response = 200
                 content_type = 'text/html'
                 output = '<h2> This is Bla </h2>'
-            else:
+            elif len(path) < 13:
             #elif path.startswith('/?'):
                 response = 200
                 content_type = 'text/html'
@@ -98,6 +97,10 @@ class ShortURLServiceCallback(httpserver.SupyHTTPServerCallback):
                 url = self.db.getURLbyID(number)
                 #output = '<p> %s' % url
                 output = '<meta http-equiv="refresh" content="0; url=%s">' % url
+            else:
+                response = 404
+                content_type ='text/html'
+                output = '<h2> Error:404 </h2><p>No such Page</p>'
         except FooException, e:
             response = 500
             content_type = 'text/html'
