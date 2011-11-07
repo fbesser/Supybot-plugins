@@ -79,18 +79,24 @@ class ShortURLServiceCallback(httpserver.SupyHTTPServerCallback):
                 output = '<p> This is the ShortURLService Plugin for Supybot/Limnoira </p>'
             
             elif len(path) < 13:
-                response = 200
                 content_type = 'text/html'
                 number = int(base62_decode(path.lstrip('/')))
                 #output = "HAAALOOOOOOOOOO"
                 url = self.db.getURLbyID(number)
                 #output = '<p> %s' % url
-                output = '<meta http-equiv="refresh" content="0; url=%s">' % url
+                if url is None:
+                    response = 404
+                    output = '<h2>Error: 404</h2><p>No such ShortURL</p>'
+                else:
+                    response = 200
+                    output = '<meta http-equiv="refresh" content="0; url=%s">' % url
+
+
            
-           else:
-                response = 404
+            else:
+                response = 400
                 content_type ='text/html'
-                output = '<h2> Error:404 </h2><p>No such Page</p>'
+                output = '<h2> Error:400 </h2><p>I don\'t understand you</p>'
         
         except FooException, e:
             response = 500
@@ -170,7 +176,9 @@ class ShortURLService(callbacks.Plugin):
         """
 
         number = self.db.writeURL('mirja', url)
-        shorturl = "http://%s/%s" % (conf.supybot.plugins.ShortURLService.baseurl, base62_encode(number))
+        shorturl = "http://%s/%s" % (
+                conf.supybot.plugins.ShortURLService.baseurl, 
+                base62_encode(number))
         irc.reply(shorturl)
     short = wrap(short, ['httpUrl'])
 
