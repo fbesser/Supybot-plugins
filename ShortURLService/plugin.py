@@ -28,6 +28,7 @@
 
 ###
 import os
+import re
 import string
 import supybot.utils as utils
 import supybot.conf as conf
@@ -78,7 +79,7 @@ class ShortURLServiceCallback(httpserver.SupyHTTPServerCallback):
                 content_type = 'text/html'
                 output = '<p> This is the ShortURLService Plugin for Supybot/Limnoira </p>'
             
-            elif len(path) < 13:
+            elif len(path) < 13 and re.match("^[A-Za-z0-9]*$", path.lstrip("/")):
                 content_type = 'text/html'
                 number = int(base62_decode(path.lstrip('/')))
                 #output = "HAAALOOOOOOOOOO"
@@ -144,6 +145,7 @@ class ShortURLServiceDB:
         pass
 
     def writeURL(self, channel, url):
+        """ writes url to shorturl and return the assigned id to this record """
         cursor = self._conn.cursor()
         cursor.execute("INSERT INTO shorturl VALUES(NULL,?,?)", (channel,url))
         cursor.execute("select last_insert_rowid()")
